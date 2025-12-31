@@ -2,7 +2,7 @@
 ; Requires Inno Setup 6.x: https://jrsoftware.org/isdl.php
 
 #define MyAppName "Klicky"
-#define MyAppVersion "R3"
+#define MyAppVersion "0.0.0"
 #define MyAppPublisher "GERMANFOXY"
 #define MyAppURL "https://github.com/GERMANFOXY/klicky"
 #define MyAppExeName "Klicky.exe"
