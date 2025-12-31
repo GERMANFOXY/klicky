@@ -6,3 +6,5 @@ obj/
 *.userosscache
 *.sln.docstates
 publish/
+installer/
+Output/
