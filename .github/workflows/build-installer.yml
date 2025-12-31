@@ -19,14 +19,13 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '10.0.100-rc.1.24431.7'
-      continue-on-error: false
+        dotnet-version: '8.0.x'
         
     - name: Restore dependencies
       run: dotnet restore
       
     - name: Publish
-      run: dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=false -o "bin/Release/net10.0-windows/win-x64/publish-fresh"
+      run: dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=false -o "bin/Release/net8.0-windows/win-x64/publish-fresh"
       
     - name: Install Inno Setup via Chocolatey
       shell: pwsh
