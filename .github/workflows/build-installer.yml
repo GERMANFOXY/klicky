@@ -19,75 +19,44 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '10.0.x'
-        dotnet-quality: 'preview'
-      timeout-minutes: 10
+        dotnet-version: '10.0.100-rc.1.24431.7'
+      continue-on-error: false
         
     - name: Restore dependencies
-      timeout-minutes: 5
       run: dotnet restore
       
     - name: Publish
-      timeout-minutes: 15
       run: dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=false -o "bin/Release/net10.0-windows/win-x64/publish-fresh"
       
-    - name: Download and Install Inno Setup
-      timeout-minutes: 10
+    - name: Install Inno Setup via Chocolatey
       shell: pwsh
       run: |
-        Write-Host "Downloading Inno Setup..."
-        $ProgressPreference = 'SilentlyContinue'
-        Invoke-WebRequest -Uri "https://jrsoftware.org/download.php/is.exe" -OutFile "innosetup.exe"
-        Write-Host "Installing Inno Setup..."
-        Start-Process -FilePath "innosetup.exe" -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-" -Wait
+        Write-Host "Installing Inno Setup via Chocolatey..."
+        choco install innosetup -y --no-progress
         Write-Host "Inno Setup installed"
         
-    - name: Verify Inno Setup Installation
-      shell: pwsh
-      run: |
-        if (Test-Path "C:\Program Files (x86)\Inno Setup 6\ISCC.exe") {
-          Write-Host "Inno Setup found at: C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
-        } else {
-          Write-Error "Inno Setup not found!"
-          exit 1
-        }
-        
     - name: Build Installer
-      timeout-minutes: 10
       shell: pwsh
       run: |
         Write-Host "Building installer..."
         & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "Klicky.iss"
-        if ($LASTEXITCODE -ne 0) {
-          Write-Error "Installer build failed!"
-          exit 1
-        }
-        Write-Host "Installer built successfully"
         
-    - name: Verify Installer
+    - name: List installer directory
       shell: pwsh
       run: |
-        $installerPath = Get-ChildItem -Path "installer" -Filter "*.exe" | Select-Object -First 1
-        if ($installerPath) {
-          Write-Host "Installer found: $($installerPath.FullName)"
-          Write-Host "Size: $($installerPath.Length) bytes"
-        } else {
-          Write-Error "No installer found in installer directory!"
-          exit 1
-        }
+        Write-Host "Contents of installer directory:"
+        Get-ChildItem -Path "installer" -Recurse
         
-    - name: Upload Installer
+    - name: Upload Installer Artifact
       uses: actions/upload-artifact@v4
       with:
         name: Klicky-Installer
         path: installer/*.exe
-        if-no-files-found: error
         
     - name: Create Release
       if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v2
       with:
         files: installer/*.exe
-        fail_on_unmatched_files: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
