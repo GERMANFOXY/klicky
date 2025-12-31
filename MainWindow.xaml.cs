@@ -185,7 +185,8 @@ public partial class MainWindow : Window
         try
         {
             var json = await Http.GetStringAsync(ManifestUrl);
-            var manifest = JsonSerializer.Deserialize<UpdateManifest>(json);
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var manifest = JsonSerializer.Deserialize<UpdateManifest>(json, options);
 
             if (manifest == null || string.IsNullOrWhiteSpace(manifest.Version))
             {
