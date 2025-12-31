@@ -17,7 +17,7 @@ namespace Klicky;
 
 public partial class MainWindow : Window
 {
-    private const string AppVersion = "R2";
+    private const string AppVersion = "R3";
     private const string ManifestUrl = "https://raw.githubusercontent.com/GERMANFOXY/klicky/master/manifest.json";
 
     private const int HotkeyId = 9000;
@@ -27,6 +27,7 @@ public partial class MainWindow : Window
     private static readonly HttpClient Http = new();
     private readonly Timer _clickTimer = new();
     private readonly object _clickLock = new();
+    private readonly MediaPlayer _notificationPlayer = new();
     private bool _isRunning;
     private PointStruct _fixedPoint;
     private bool _hasFixedPoint;
@@ -38,6 +39,17 @@ public partial class MainWindow : Window
         _clickTimer.AutoReset = true;
         UpdateStatus("Bereit", running: false);
         UpdateHotkeyDisplay();
+        
+        // Load notification sound
+        try
+        {
+            var soundPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "notification.mp3");
+            if (File.Exists(soundPath))
+            {
+                _notificationPlayer.Open(new Uri(soundPath));
+            }
+        }
+        catch { /* Ignore if sound file is missing */ }
     }
 
     private uint GetVirtualKeyCode(int fKeyIndex)
@@ -350,11 +362,22 @@ public partial class MainWindow : Window
     {
         if (msg == WmHotkey && wParam.ToInt32() == HotkeyId)
         {
+            PlayNotificationSound();
             ToggleClicking();
             handled = true;
         }
 
         return IntPtr.Zero;
+    }
+
+    private void PlayNotificationSound()
+    {
+        try
+        {
+            _notificationPlayer.Position = TimeSpan.Zero;
+            _notificationPlayer.Play();
+        }
+        catch { /* Ignore playback errors */ }
     }
 
     private const uint MouseEventLeftDown = 0x0002;
