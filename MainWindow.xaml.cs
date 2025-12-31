@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text.Json;
@@ -16,7 +17,7 @@ namespace Klicky;
 
 public partial class MainWindow : Window
 {
-    private const string AppVersion = "R1";
+    private const string AppVersion = "R2";
     private const string ManifestUrl = "https://raw.githubusercontent.com/GERMANFOXY/klicky/master/manifest.json";
 
     private const int HotkeyId = 9000;
@@ -235,24 +236,61 @@ public partial class MainWindow : Window
                 return;
             }
 
-            var url = string.IsNullOrWhiteSpace(manifest.Url)
-                ? "https://github.com/messi/Klicky/releases/latest"
-                : manifest.Url;
-
-            var result = MessageBox.Show($"Neue Version {manifest.Version} verfügbar. Jetzt öffnen?", "Update", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            var result = MessageBox.Show($"Neue Version {manifest.Version} verfügbar. Jetzt herunterladen und installieren?", "Update", MessageBoxButton.YesNo, MessageBoxImage.Information);
             if (result == MessageBoxResult.Yes)
             {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = url,
-                    UseShellExecute = true
-                });
+                await DownloadAndInstallUpdateAsync(manifest);
             }
         }
         catch (Exception ex)
         {
             if (!silent)
                 MessageBox.Show($"Update-Check fehlgeschlagen: {ex.Message}", "Update", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private async Task DownloadAndInstallUpdateAsync(UpdateManifest manifest)
+    {
+        try
+        {
+            UpdateStatus("Update wird heruntergeladen...", running: false);
+
+            // Get installer URL - construct direct download URL from GitHub release
+            var installerUrl = $"https://github.com/GERMANFOXY/klicky/releases/download/v{manifest.Version}/Klicky-Setup-{manifest.Version}.exe";
+            
+            var tempPath = Path.Combine(Path.GetTempPath(), $"Klicky-Setup-{manifest.Version}.exe");
+
+            // Download installer
+            var response = await Http.GetAsync(installerUrl);
+            if (!response.IsSuccessStatusCode)
+            {
+                MessageBox.Show($"Download fehlgeschlagen: {response.StatusCode}", "Update Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                UpdateStatus("Bereit", running: false);
+                return;
+            }
+
+            await using (var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                await response.Content.CopyToAsync(fs);
+            }
+
+            UpdateStatus("Update wird installiert...", running: false);
+
+            // Start installer
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = tempPath,
+                UseShellExecute = true,
+                Verb = "runas" // Run as admin
+            });
+
+            // Close current app
+            Application.Current.Shutdown();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Update fehlgeschlagen: {ex.Message}", "Update Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            UpdateStatus("Bereit", running: false);
         }
     }
 

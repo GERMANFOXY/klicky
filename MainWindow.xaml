@@ -157,7 +157,7 @@
                         <TextBlock Text="Klicky Autoclicker" Foreground="{StaticResource TextMain}" FontSize="26" FontWeight="Bold" />
                         <TextBlock Text="Leichtgewichtig, schnell, violett." Foreground="{StaticResource TextSub}" FontSize="14" Margin="0,4,0,14" />
                     </StackPanel>
-                    <TextBlock Grid.Column="1" Text="Version R1" Foreground="{StaticResource TextSub}" FontSize="12" FontWeight="Bold" VerticalAlignment="Top" Margin="12,4,0,0" />
+                    <TextBlock Grid.Column="1" Text="Version R2" Foreground="{StaticResource TextSub}" FontSize="12" FontWeight="Bold" VerticalAlignment="Top" Margin="12,4,0,0" />
                 </Grid>
 
                 <Grid Grid.Row="1" ColumnDefinitions="2*,1*" Margin="0,4,0,10">
