@@ -17,8 +17,7 @@ namespace Klicky;
 public partial class MainWindow : Window
 {
     private const string AppVersion = "R";
-    // TODO: Manifest-URL auf das eigene GitHub-Repo anpassen
-    private const string ManifestUrl = "https://raw.githubusercontent.com/messi/Klicky/main/manifest.json";
+    private const string ManifestUrl = "https://raw.githubusercontent.com/GERMANFOXY/klicky/master/manifest.json";
 
     private const int HotkeyId = 9000;
     private const uint VkF6 = 0x75;
@@ -45,6 +44,7 @@ public partial class MainWindow : Window
         var source = (HwndSource?)PresentationSource.FromVisual(this);
         source?.AddHook(WndProc);
         RegisterHotKey();
+        _ = CheckForUpdatesAsync(silent: true);
     }
 
     protected override void OnClosing(CancelEventArgs e)
@@ -65,7 +65,7 @@ public partial class MainWindow : Window
         CheckUpdateButton.IsEnabled = false;
         try
         {
-            await CheckForUpdatesAsync();
+            await CheckForUpdatesAsync(silent: false);
         }
         finally
         {
@@ -180,7 +180,7 @@ public partial class MainWindow : Window
         mouse_event(up, 0, 0, 0, 0);
     }
 
-    private async Task CheckForUpdatesAsync()
+    private async Task CheckForUpdatesAsync(bool silent = false)
     {
         try
         {
@@ -189,13 +189,15 @@ public partial class MainWindow : Window
 
             if (manifest == null || string.IsNullOrWhiteSpace(manifest.Version))
             {
-                MessageBox.Show("Manifest fehlerhaft oder leer.", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
+                if (!silent)
+                    MessageBox.Show("Manifest fehlerhaft oder leer.", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             if (string.Equals(manifest.Version.Trim(), AppVersion, StringComparison.OrdinalIgnoreCase))
             {
-                MessageBox.Show($"Du hast bereits Version {AppVersion}.", "Update", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (!silent)
+                    MessageBox.Show($"Du hast bereits Version {AppVersion}.", "Update", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -215,7 +217,8 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Update-Check fehlgeschlagen: {ex.Message}", "Update", MessageBoxButton.OK, MessageBoxImage.Error);
+            if (!silent)
+                MessageBox.Show($"Update-Check fehlgeschlagen: {ex.Message}", "Update", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
