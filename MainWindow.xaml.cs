@@ -16,12 +16,12 @@ namespace Klicky;
 
 public partial class MainWindow : Window
 {
-    private const string AppVersion = "R";
+    private const string AppVersion = "R1";
     private const string ManifestUrl = "https://raw.githubusercontent.com/GERMANFOXY/klicky/master/manifest.json";
 
     private const int HotkeyId = 9000;
-    private const uint VkF6 = 0x75;
     private const int WmHotkey = 0x0312;
+    private uint _currentVirtualKey = 0x75; // Default F6
 
     private static readonly HttpClient Http = new();
     private readonly Timer _clickTimer = new();
@@ -36,6 +36,39 @@ public partial class MainWindow : Window
         _clickTimer.Elapsed += OnClickTimerElapsed;
         _clickTimer.AutoReset = true;
         UpdateStatus("Bereit", running: false);
+        UpdateHotkeyDisplay();
+    }
+
+    private uint GetVirtualKeyCode(int fKeyIndex)
+    {
+        // F1-F12 have VK codes 0x70-0x7B
+        return (uint)(0x70 + fKeyIndex);
+    }
+
+    private void UpdateHotkeyDisplay()
+    {
+        int fKeyNumber = (int)(_currentVirtualKey - 0x70) + 1;
+        HotkeyText.Text = $"F{fKeyNumber} zum Start/Stop";
+    }
+
+    private void HotkeyComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    {
+        if (HotkeyComboBox.SelectedIndex < 0) return;
+        
+        uint newVirtualKey = GetVirtualKeyCode(HotkeyComboBox.SelectedIndex);
+        if (newVirtualKey == _currentVirtualKey) return;
+
+        // Unregister old hotkey
+        UnregisterHotKey();
+        
+        // Update to new key
+        _currentVirtualKey = newVirtualKey;
+        
+        // Register new hotkey
+        RegisterHotKey();
+        
+        // Update display
+        UpdateHotkeyDisplay();
     }
 
     protected override void OnSourceInitialized(EventArgs e)
@@ -260,7 +293,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        if (!WinRegisterHotKey(helper.Handle, HotkeyId, 0, VkF6))
+        if (!WinRegisterHotKey(helper.Handle, HotkeyId, 0, _currentVirtualKey))
         {
             UpdateStatus("Hotkey konnte nicht registriert werden", running: false);
         }

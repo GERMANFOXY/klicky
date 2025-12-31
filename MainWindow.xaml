@@ -157,7 +157,7 @@
                         <TextBlock Text="Klicky Autoclicker" Foreground="{StaticResource TextMain}" FontSize="26" FontWeight="Bold" />
                         <TextBlock Text="Leichtgewichtig, schnell, violett." Foreground="{StaticResource TextSub}" FontSize="14" Margin="0,4,0,14" />
                     </StackPanel>
-                    <TextBlock Grid.Column="1" Text="Version R" Foreground="{StaticResource TextSub}" FontSize="12" FontWeight="Bold" VerticalAlignment="Top" Margin="12,4,0,0" />
+                    <TextBlock Grid.Column="1" Text="Version R1" Foreground="{StaticResource TextSub}" FontSize="12" FontWeight="Bold" VerticalAlignment="Top" Margin="12,4,0,0" />
                 </Grid>
 
                 <Grid Grid.Row="1" ColumnDefinitions="2*,1*" Margin="0,4,0,10">
@@ -204,7 +204,7 @@
                                 <Ellipse Width="12" Height="12" Fill="{StaticResource AccentBrush}" Margin="0,0,8,0" />
                                 <StackPanel>
                                     <TextBlock Text="Hotkey" Foreground="{StaticResource TextSub}" FontSize="12" />
-                                    <TextBlock Text="F6 zum Start/Stop" Foreground="{StaticResource TextMain}" FontSize="14" />
+                                    <TextBlock x:Name="HotkeyText" Text="F6 zum Start/Stop" Foreground="{StaticResource TextMain}" FontSize="14" />
                                 </StackPanel>
                             </StackPanel>
                         </Border>
@@ -218,15 +218,49 @@
                     </StackPanel>
                 </Grid>
 
-                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0,4,0,0">
-                    <Button x:Name="StartStopButton" Style="{StaticResource AccentButton}" Width="180" Click="StartStopButton_Click">Starten</Button>
-                    <CheckBox x:Name="FollowCursorCheck" Content="Immer aktuelle Cursor-Position" Foreground="{StaticResource TextMain}" FontSize="14" VerticalAlignment="Center" Margin="12,0,0,0" IsChecked="True" />
+                <StackPanel Grid.Row="2" Margin="0,4,0,0">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <Button x:Name="StartStopButton" Style="{StaticResource AccentButton}" Width="180" Click="StartStopButton_Click">Starten</Button>
+                        <CheckBox x:Name="FollowCursorCheck" Content="Immer aktuelle Cursor-Position" Foreground="{StaticResource TextMain}" FontSize="14" VerticalAlignment="Center" Margin="12,0,0,0" IsChecked="True" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,12,0,0">
+                        <TextBlock Text="Hotkey:" Foreground="{StaticResource TextMain}" FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0" />
+                        <ComboBox x:Name="HotkeyComboBox" Style="{StaticResource VioletComboBox}" Width="100" SelectedIndex="5" SelectionChanged="HotkeyComboBox_SelectionChanged">
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="ComboBoxItem">
+                                    <Setter Property="Foreground" Value="{StaticResource TextMain}" />
+                                    <Setter Property="Background" Value="{StaticResource ComboBackground}" />
+                                    <Setter Property="Padding" Value="8 6" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource ComboHighlight}" />
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource ComboHighlight}" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ComboBox.ItemContainerStyle>
+                            <ComboBoxItem Content="F1" />
+                            <ComboBoxItem Content="F2" />
+                            <ComboBoxItem Content="F3" />
+                            <ComboBoxItem Content="F4" />
+                            <ComboBoxItem Content="F5" />
+                            <ComboBoxItem Content="F6" />
+                            <ComboBoxItem Content="F7" />
+                            <ComboBoxItem Content="F8" />
+                            <ComboBoxItem Content="F9" />
+                            <ComboBoxItem Content="F10" />
+                            <ComboBoxItem Content="F11" />
+                            <ComboBoxItem Content="F12" />
+                        </ComboBox>
+                    </StackPanel>
                 </StackPanel>
 
                 <Grid Grid.Row="3" ColumnDefinitions="*,Auto" Margin="0,14,0,0">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                         <TextBlock Text="Tip:" Foreground="{StaticResource AccentBrush}" FontWeight="Bold" />
-                        <TextBlock Text="F6 toggelt jederzeit. Werte speichern sich automatisch." Foreground="{StaticResource TextSub}" Margin="8,0,0,0" />
+                        <TextBlock Text="Hotkey toggelt jederzeit. Werte speichern sich automatisch." Foreground="{StaticResource TextSub}" Margin="8,0,0,0" />
                     </StackPanel>
                     <Button x:Name="CheckUpdateButton" Grid.Column="1" Style="{StaticResource AccentButton}" Padding="12 8" Width="170" Click="CheckUpdateButton_Click">Update prüfen</Button>
                 </Grid>

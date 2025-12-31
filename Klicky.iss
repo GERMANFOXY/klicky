@@ -2,7 +2,7 @@
 ; Requires Inno Setup 6.x: https://jrsoftware.org/isdl.php
 
 #define MyAppName "Klicky"
-#define MyAppVersion "R"
+#define MyAppVersion "R1"
 #define MyAppPublisher "GERMANFOXY"
 #define MyAppURL "https://github.com/GERMANFOXY/klicky"
 #define MyAppExeName "Klicky.exe"
@@ -26,7 +26,7 @@ SolidCompression=yes
 WizardStyle=modern
 SetupIconFile=
 UninstallDisplayIcon={app}\{#MyAppExeName}
-PrivilegesRequired=lowest
+PrivilegesRequired=admin
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 
