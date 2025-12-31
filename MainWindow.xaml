@@ -7,28 +7,28 @@
         mc:Ignorable="d"
         Title="Klicky" Height="480" Width="760" MinHeight="420" MinWidth="640" WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip" Background="Transparent">
     <Window.Resources>
-        <Color x:Key="Primary">#7C5CFF</Color>
-        <Color x:Key="PrimaryDark">#5A3FD5</Color>
-        <Color x:Key="Accent">#C9B6FF</Color>
-        <SolidColorBrush x:Key="PrimaryBrush" Color="#7C5CFF" />
-        <SolidColorBrush x:Key="PrimaryDarkBrush" Color="#5A3FD5" />
-        <SolidColorBrush x:Key="AccentBrush" Color="#C9B6FF" />
-        <SolidColorBrush x:Key="CardBrush" Color="#0F0A1A" Opacity="0.65" />
+        <Color x:Key="Primary">#E6B800</Color>
+        <Color x:Key="PrimaryDark">#C59000</Color>
+        <Color x:Key="Accent">#FFD871</Color>
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#E6B800" />
+        <SolidColorBrush x:Key="PrimaryDarkBrush" Color="#C59000" />
+        <SolidColorBrush x:Key="AccentBrush" Color="#FFD871" />
+        <SolidColorBrush x:Key="CardBrush" Color="#0A0A0F" Opacity="0.78" />
         <SolidColorBrush x:Key="TextMain" Color="#F7F3FF" />
-        <SolidColorBrush x:Key="TextSub" Color="#D3C9FF" />
-        <SolidColorBrush x:Key="ComboBackground" Color="#1E1433" />
-        <SolidColorBrush x:Key="ComboHighlight" Color="#2E2252" />
+        <SolidColorBrush x:Key="TextSub" Color="#E8D79E" />
+        <SolidColorBrush x:Key="ComboBackground" Color="#111118" />
+        <SolidColorBrush x:Key="ComboHighlight" Color="#E6B800" />
         <SolidColorBrush x:Key="ComboForeground" Color="#F7F3FF" />
         <LinearGradientBrush x:Key="Backdrop" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#120A24" Offset="0" />
-            <GradientStop Color="#1D1140" Offset="0.45" />
-            <GradientStop Color="#281A59" Offset="1" />
+            <GradientStop Color="#020304" Offset="0" />
+            <GradientStop Color="#0A0A0F" Offset="0.45" />
+            <GradientStop Color="#13141C" Offset="1" />
         </LinearGradientBrush>
         <Style x:Key="InputBox" TargetType="TextBox">
             <Setter Property="Margin" Value="0,4,0,12" />
             <Setter Property="Padding" Value="10" />
             <Setter Property="Foreground" Value="{StaticResource TextMain}" />
-            <Setter Property="Background" Value="#1E1433" />
+            <Setter Property="Background" Value="#1A1520" />
             <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
             <Setter Property="BorderThickness" Value="1.5" />
             <Setter Property="FontSize" Value="16" />
@@ -51,10 +51,10 @@
             <Setter Property="Cursor" Value="Hand" />
         </Style>
         <Style x:Key="Chip" TargetType="Border">
-            <Setter Property="Background" Value="#1E1433" />
+            <Setter Property="Background" Value="#111118" />
             <Setter Property="CornerRadius" Value="10" />
             <Setter Property="Padding" Value="10 8" />
-            <Setter Property="BorderBrush" Value="#2E2252" />
+            <Setter Property="BorderBrush" Value="#C59000" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Margin" Value="0,8,0,0" />
         </Style>
@@ -147,7 +147,8 @@
         <Grid.Effect>
             <DropShadowEffect Color="#000000" BlurRadius="24" ShadowDepth="0" Opacity="0.35" />
         </Grid.Effect>
-        <Border HorizontalAlignment="Center" VerticalAlignment="Center" Padding="26" CornerRadius="18" Background="{StaticResource CardBrush}" BorderBrush="#2A1E45" BorderThickness="1.5">
+        <MediaElement x:Name="FireworksVideo" LoadedBehavior="Manual" UnloadedBehavior="Manual" Stretch="UniformToFill" IsHitTestVisible="False" Panel.ZIndex="0" Opacity="0" />
+        <Border Panel.ZIndex="1" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="26" CornerRadius="18" Background="{StaticResource CardBrush}" BorderBrush="#4A3A0F" BorderThickness="1.5">
             <Border.Effect>
                 <DropShadowEffect Color="#000000" BlurRadius="18" ShadowDepth="0" Opacity="0.25" />
             </Border.Effect>
@@ -160,18 +161,27 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Grid Margin="0,0,0,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel>
-                        <TextBlock Text="Klicky Autoclicker" Foreground="{StaticResource TextMain}" FontSize="26" FontWeight="Bold" />
-                        <TextBlock Text="Leichtgewichtig, schnell, violett." Foreground="{StaticResource TextSub}" FontSize="14" Margin="0,4,0,14" />
+                <StackPanel Grid.Row="0" Margin="0,0,0,10">
+                        <StackPanel Margin="0,0,0,10">
+                            <TextBlock Text="Klicky Autoclicker" Foreground="{StaticResource TextMain}" FontSize="26" FontWeight="Bold" />
+                            <TextBlock Text="Leichtgewichtig, schnell, schwarz-gold." Foreground="{StaticResource TextSub}" FontSize="14" Margin="0,4,0,14" />
+                        </StackPanel>
+
+                        <UniformGrid Columns="1" Margin="0,0,0,10">
+                            <Border Style="{StaticResource Chip}" Background="#0F1728" BorderBrush="{StaticResource AccentBrush}">
+                                <StackPanel>
+                                    <TextBlock Text="Support" Foreground="{StaticResource AccentBrush}" FontSize="14" FontWeight="Bold" />
+                                    <TextBlock Text="Powered by FOXYVERSE" Foreground="{StaticResource TextMain}" FontSize="12" Margin="0,4,0,0" />
+                                    <TextBlock Text="Version 0.1.0.26.S" Foreground="{StaticResource TextSub}" FontSize="12" Margin="0,2,0,0" />
+                                    <TextBlock Margin="0,6,0,0" FontSize="12">
+                                        <Hyperlink NavigateUri="https://discord.gg/Hy38gjThfx" RequestNavigate="Hyperlink_RequestNavigate" Foreground="{StaticResource AccentBrush}">Support Discord</Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                        </UniformGrid>
                     </StackPanel>
-                    <TextBlock Grid.Column="1" Text="Version 0.0.0" Foreground="{StaticResource TextSub}" FontSize="12" FontWeight="Bold" VerticalAlignment="Top" Margin="12,4,0,0" />
-                </Grid>
 
                 <Grid Grid.Row="1" Margin="0,4,0,10">
                     <Grid.ColumnDefinitions>
@@ -180,7 +190,7 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Margin="0,0,12,0" VerticalAlignment="Top">
                         <TextBlock Text="Clicks per Second" Foreground="{StaticResource TextSub}" Margin="0,0,0,2" />
-                        <TextBox x:Name="CpsInput" Style="{StaticResource InputBox}" Text="10" ToolTip="Wie viele Klicks pro Sekunde" />
+                        <TextBox x:Name="CpsInput" Style="{StaticResource InputBox}" Text="10" ToolTip="Wie viele Klicks pro Sekunde" TextChanged="CpsInput_TextChanged" />
 
                         <TextBlock Text="Intervall (ms, optional)" Foreground="{StaticResource TextSub}" Margin="0,0,0,2" />
                         <TextBox x:Name="IntervalInput" Style="{StaticResource InputBox}" Text="100" ToolTip="Millisekunden zwischen Klicks; überschreibt CPS wenn angegeben" />
@@ -188,8 +198,8 @@
                         <TextBlock Text="Maus-Button" Foreground="{StaticResource TextSub}" Margin="0,0,0,2" />
                         <ComboBox x:Name="ButtonSelect" Style="{StaticResource VioletComboBox}" SelectedIndex="0">
                             <ComboBox.Resources>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#1E1433" />
-                                <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="#1E1433" />
+                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#1A1520" />
+                                <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="#1A1520" />
                                 <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="#F7F3FF" />
                                 <SolidColorBrush x:Key="{x:Static SystemColors.WindowTextBrushKey}" Color="#F7F3FF" />
                             </ComboBox.Resources>
@@ -236,9 +246,14 @@
                 </Grid>
 
                 <StackPanel Grid.Row="2" Margin="0,4,0,0">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                         <Button x:Name="StartStopButton" Style="{StaticResource AccentButton}" Width="180" Click="StartStopButton_Click">Starten</Button>
-                        <CheckBox x:Name="FollowCursorCheck" Content="Immer aktuelle Cursor-Position" Foreground="{StaticResource TextMain}" FontSize="14" VerticalAlignment="Center" Margin="12,0,0,0" IsChecked="True" />
+                        <CheckBox x:Name="FollowCursorCheck" Content="Cursor folgen" Foreground="{StaticResource TextMain}" FontSize="13" VerticalAlignment="Center" Margin="16,0,0,0" IsChecked="True" />
+                    </StackPanel>
+                    <CheckBox x:Name="HoldModeCheck" Content="Halten-Modus (Roblox)" Foreground="{StaticResource TextMain}" FontSize="13" Margin="0,10,0,8" IsChecked="False" Checked="HoldModeCheck_Changed" Unchecked="HoldModeCheck_Changed" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Center">
+                        <TextBlock x:Name="HoldDurationLabel" Text="Halte-Dauer (Sekunden):" Foreground="{StaticResource TextSub}" FontSize="14" VerticalAlignment="Center" Margin="0,0,12,0" Visibility="Collapsed" />
+                        <TextBox x:Name="HoldDurationInput" Style="{StaticResource InputBox}" Text="3" Visibility="Collapsed" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,12,0,0">
                         <TextBlock Text="Hotkey:" Foreground="{StaticResource TextMain}" FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0" />
@@ -281,10 +296,13 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                         <TextBlock Text="Tip:" Foreground="{StaticResource AccentBrush}" FontWeight="Bold" />
-                        <TextBlock Text="Hotkey toggelt jederzeit. Werte speichern sich automatisch." Foreground="{StaticResource TextSub}" Margin="8,0,0,0" />
+                        <TextBlock Text="Hotkey startet/stoppt. Einstellungen speichern automatisch." Foreground="{StaticResource TextSub}" Margin="8,0,0,0" />
                     </StackPanel>
                     <Button x:Name="CheckUpdateButton" Grid.Column="1" Style="{StaticResource AccentButton}" Padding="12 8" Width="170" Click="CheckUpdateButton_Click">Update prüfen</Button>
                 </Grid>
+
+                <!-- Fireworks overlay -->
+                <Canvas x:Name="FireworksCanvas" Grid.Row="0" Grid.RowSpan="5" IsHitTestVisible="False" Panel.ZIndex="8" Opacity="0" Visibility="Collapsed" />
             </Grid>
         </Border>
     </Grid>

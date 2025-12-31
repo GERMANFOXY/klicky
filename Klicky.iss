@@ -2,7 +2,7 @@
 ; Requires Inno Setup 6.x: https://jrsoftware.org/isdl.php
 
 #define MyAppName "Klicky"
-#define MyAppVersion "0.0.0"
+#define MyAppVersion "0.1.0.26"
 #define MyAppPublisher "GERMANFOXY"
 #define MyAppURL "https://github.com/GERMANFOXY/klicky"
 #define MyAppExeName "Klicky.exe"
@@ -38,7 +38,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "Quick Launch Symbol erstellen"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "bin\Release\net8.0-windows\win-x64\publish-fresh\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\Release\net8.0-windows\win-x64\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

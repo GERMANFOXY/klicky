@@ -10,14 +10,19 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Navigation;
 using System.Windows.Threading;
+using System.Windows.Media.Animation;
+using System.Windows.Shapes;
+using System.Windows.Controls;
+using IOPath = System.IO.Path;
 using Timer = System.Timers.Timer;
 
 namespace Klicky;
 
 public partial class MainWindow : Window
 {
-    private const string AppVersion = "0.0.0";
+    private const string AppVersion = "0.1.0.26";
     private const string ManifestUrl = "https://raw.githubusercontent.com/GERMANFOXY/klicky/master/manifest.json";
 
     private const int HotkeyId = 9000;
@@ -28,22 +33,33 @@ public partial class MainWindow : Window
     private readonly Timer _clickTimer = new();
     private readonly object _clickLock = new();
     private readonly MediaPlayer _notificationPlayer = new();
+    private readonly DispatcherTimer _fireworksTimer = new();
+    private readonly Random _rand = new();
     private bool _isRunning;
     private PointStruct _fixedPoint;
     private bool _hasFixedPoint;
+    private bool _isHoldMode;
+    private bool _isCurrentlyHolding;
+    private DateTime _holdStartTime;
+    private bool _fireworksRunning;
+    private DateTime _fireworksEnd;
 
     public MainWindow()
     {
         InitializeComponent();
         _clickTimer.Elapsed += OnClickTimerElapsed;
         _clickTimer.AutoReset = true;
+        _fireworksTimer.Interval = TimeSpan.FromMilliseconds(200);
+        _fireworksTimer.Tick += FireworksTimer_Tick;
         UpdateStatus("Bereit", running: false);
         UpdateHotkeyDisplay();
+
+        SetupFireworksVideo();
         
         // Load notification sound
         try
         {
-            var soundPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "notification.mp3");
+            var soundPath = IOPath.Combine(AppDomain.CurrentDomain.BaseDirectory, "notification.mp3");
             if (File.Exists(soundPath))
             {
                 _notificationPlayer.Open(new Uri(soundPath));
@@ -119,6 +135,118 @@ public partial class MainWindow : Window
         }
     }
 
+    private void CpsInput_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+    {
+        var text = CpsInput.Text.Trim();
+        if (text == "2026" && !_fireworksRunning)
+        {
+            StartFireworks(TimeSpan.FromSeconds(10));
+        }
+    }
+
+    private void StartFireworks(TimeSpan duration)
+    {
+        _fireworksRunning = true;
+        _fireworksEnd = DateTime.Now + duration;
+        FireworksCanvas.Visibility = Visibility.Collapsed;
+        FireworksCanvas.Opacity = 0.0;
+        if (FireworksVideo.Source != null)
+        {
+            try
+            {
+                FireworksVideo.Position = TimeSpan.Zero;
+                FireworksVideo.Opacity = 0.45;
+                FireworksVideo.Play();
+            }
+            catch { /* ignore playback errors */ }
+        }
+        _fireworksTimer.Start();
+    }
+
+    private void StopFireworks()
+    {
+        _fireworksTimer.Stop();
+        FireworksCanvas.Children.Clear();
+        FireworksCanvas.Opacity = 0.0;
+        FireworksCanvas.Visibility = Visibility.Collapsed;
+        if (FireworksVideo.Source != null)
+        {
+            try
+            {
+                FireworksVideo.Stop();
+                FireworksVideo.Opacity = 0.0;
+            }
+            catch { }
+        }
+        _fireworksRunning = false;
+    }
+
+    private void FireworksTimer_Tick(object? sender, EventArgs e)
+    {
+        if (!_fireworksRunning)
+        {
+            return;
+        }
+
+        if (DateTime.Now >= _fireworksEnd)
+        {
+            StopFireworks();
+            return;
+        }
+    }
+
+    private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Konnte Link nicht öffnen: {ex.Message}", "Link", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+
+        e.Handled = true;
+    }
+
+    private void SetupFireworksVideo()
+    {
+        try
+        {
+            var exeDir = IOPath.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? AppDomain.CurrentDomain.BaseDirectory;
+            var videoPath = IOPath.Combine(exeDir, "fireworks.mp4");
+            if (File.Exists(videoPath))
+            {
+                FireworksVideo.Source = new Uri(videoPath);
+                FireworksVideo.MediaEnded += (_, _) =>
+                {
+                    try
+                    {
+                        FireworksVideo.Position = TimeSpan.Zero;
+                        FireworksVideo.Play();
+                    }
+                    catch { }
+                };
+            }
+        }
+        catch { /* ignore */ }
+    }
+
+    private void HoldModeCheck_Changed(object sender, RoutedEventArgs e)
+    {
+        var isHoldMode = HoldModeCheck.IsChecked ?? false;
+        HoldDurationLabel.Visibility = isHoldMode ? Visibility.Visible : Visibility.Collapsed;
+        HoldDurationInput.Visibility = isHoldMode ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private double ParseHoldDuration()
+    {
+        var text = HoldDurationInput.Dispatcher.Invoke(() => HoldDurationInput.Text);
+        if (double.TryParse(text, out var val) && val > 0)
+            return val;
+        return 3.0; // Default 3 seconds
+    }
+
     private void ToggleClicking()
     {
         if (_isRunning)
@@ -152,6 +280,8 @@ public partial class MainWindow : Window
         }
 
         _hasFixedPoint = false;
+        _isHoldMode = HoldModeCheck.Dispatcher.Invoke(() => HoldModeCheck.IsChecked ?? false);
+        _isCurrentlyHolding = false;
         var followCursor = FollowCursorCheck.Dispatcher.Invoke(() => FollowCursorCheck.IsChecked ?? true);
         if (!followCursor && GetCursorPos(out var point))
         {
@@ -170,6 +300,16 @@ public partial class MainWindow : Window
     {
         _clickTimer.Stop();
         _isRunning = false;
+        
+        // Release mouse if currently holding
+        if (_isCurrentlyHolding)
+        {
+            var leftClick = ButtonSelect.Dispatcher.Invoke(() => ButtonSelect.SelectedIndex == 0);
+            uint up = leftClick ? MouseEventLeftUp : MouseEventRightUp;
+            mouse_event(up, 0, 0, 0, 0);
+            _isCurrentlyHolding = false;
+        }
+        
         Dispatcher.Invoke(() => StartStopButton.Content = "Starten");
         UpdateStatus("Bereit", running: false);
     }
@@ -188,6 +328,18 @@ public partial class MainWindow : Window
     }
 
     private void PerformClick()
+    {
+        if (_isHoldMode)
+        {
+            PerformHoldMode();
+        }
+        else
+        {
+            PerformNormalClick();
+        }
+    }
+
+    private void PerformNormalClick()
     {
         var leftClick = ButtonSelect.Dispatcher.Invoke(() => ButtonSelect.SelectedIndex == 0);
         var followCursor = FollowCursorCheck.Dispatcher.Invoke(() => FollowCursorCheck.IsChecked ?? true);
@@ -224,6 +376,61 @@ public partial class MainWindow : Window
 
         mouse_event(down, 0, 0, 0, 0);
         mouse_event(up, 0, 0, 0, 0);
+    }
+
+    private void PerformHoldMode()
+    {
+        var leftClick = ButtonSelect.Dispatcher.Invoke(() => ButtonSelect.SelectedIndex == 0);
+        var followCursor = FollowCursorCheck.Dispatcher.Invoke(() => FollowCursorCheck.IsChecked ?? true);
+        var holdDurationSeconds = ParseHoldDuration();
+
+        PointStruct target = default;
+        if (followCursor)
+        {
+            if (!GetCursorPos(out target))
+            {
+                return;
+            }
+        }
+        else
+        {
+            if (!_hasFixedPoint && !GetCursorPos(out target))
+            {
+                return;
+            }
+
+            if (_hasFixedPoint)
+            {
+                target = _fixedPoint;
+            }
+        }
+
+        if (!followCursor)
+        {
+            SetCursorPos(target.X, target.Y);
+        }
+
+        uint down = leftClick ? MouseEventLeftDown : MouseEventRightDown;
+        uint up = leftClick ? MouseEventLeftUp : MouseEventRightUp;
+
+        if (!_isCurrentlyHolding)
+        {
+            // Start holding
+            mouse_event(down, 0, 0, 0, 0);
+            _isCurrentlyHolding = true;
+            _holdStartTime = DateTime.Now;
+        }
+        else
+        {
+            // Check if hold duration expired
+            var elapsed = (DateTime.Now - _holdStartTime).TotalSeconds;
+            if (elapsed >= holdDurationSeconds)
+            {
+                // Release and start new hold
+                mouse_event(up, 0, 0, 0, 0);
+                _isCurrentlyHolding = false;
+            }
+        }
     }
 
     private async Task CheckForUpdatesAsync(bool silent = false)
@@ -270,7 +477,7 @@ public partial class MainWindow : Window
             // Get installer URL - construct direct download URL from GitHub release
             var installerUrl = $"https://github.com/GERMANFOXY/klicky/releases/download/v{manifest.Version}/Klicky-Setup-{manifest.Version}.exe";
             
-            var tempPath = Path.Combine(Path.GetTempPath(), $"Klicky-Setup-{manifest.Version}.exe");
+            var tempPath = IOPath.Combine(IOPath.GetTempPath(), $"Klicky-Setup-{manifest.Version}.exe");
 
             // Download installer
             var response = await Http.GetAsync(installerUrl);
@@ -313,7 +520,7 @@ public partial class MainWindow : Window
             StatusText.Text = message;
             StatusText.Foreground = running
                 ? new SolidColorBrush(Color.FromRgb(120, 255, 189))
-                : new SolidColorBrush(Color.FromRgb(201, 182, 255));
+                : new SolidColorBrush(Color.FromRgb(247, 243, 255));
         }, DispatcherPriority.Background);
     }
 
@@ -346,6 +553,10 @@ public partial class MainWindow : Window
         if (!WinRegisterHotKey(helper.Handle, HotkeyId, 0, _currentVirtualKey))
         {
             UpdateStatus("Hotkey konnte nicht registriert werden", running: false);
+        }
+        else
+        {
+            UpdateStatus("Bereit", running: false);
         }
     }
 
