@@ -47,6 +47,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        this.MouseLeftButtonDown += MainWindow_MouseLeftButtonDown;
         _clickTimer.Elapsed += OnClickTimerElapsed;
         _clickTimer.AutoReset = true;
         _fireworksTimer.Interval = TimeSpan.FromMilliseconds(200);
@@ -616,6 +617,16 @@ public partial class MainWindow : Window
     {
         public int X;
         public int Y;
+    }
+
+    private void MainWindow_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        DragMove();
+    }
+
+    private void CloseButton_Click(object sender, RoutedEventArgs e)
+    {
+        Close();
     }
 
     private sealed class UpdateManifest
