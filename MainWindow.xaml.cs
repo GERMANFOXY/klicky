@@ -677,10 +677,10 @@ public partial class MainWindow : Window
         {
             UpdateStatus("Update wird heruntergeladen...", running: false);
 
-            // Get installer URL - construct direct download URL from GitHub release
-            var installerUrl = $"https://github.com/GERMANFOXY/klicky/releases/download/v{manifest.Version}/Klicky-Setup-{manifest.Version}.exe";
+            // Use URL from manifest
+            var installerUrl = manifest.Url;
             
-            var tempPath = IOPath.Combine(IOPath.GetTempPath(), $"Klicky-Setup-{manifest.Version}.exe");
+            var tempPath = IOPath.Combine(IOPath.GetTempPath(), $"Klicky-{manifest.Version}.exe");
 
             // Download installer
             var response = await Http.GetAsync(installerUrl);
@@ -698,12 +698,11 @@ public partial class MainWindow : Window
 
             UpdateStatus("Update wird installiert...", running: false);
 
-            // Start installer
+            // Start new executable
             Process.Start(new ProcessStartInfo
             {
                 FileName = tempPath,
-                UseShellExecute = true,
-                Verb = "runas" // Run as admin
+                UseShellExecute = true
             });
 
             // Close current app
