@@ -174,7 +174,7 @@
                                 <StackPanel>
                                     <TextBlock Text="Support" Foreground="{StaticResource AccentBrush}" FontSize="14" FontWeight="Bold" />
                                     <TextBlock Text="Powered by FOXYVERSE" Foreground="{StaticResource TextMain}" FontSize="12" Margin="0,4,0,0" />
-                                    <TextBlock Text="Version 0.1.0.26.S" Foreground="{StaticResource TextSub}" FontSize="12" Margin="0,2,0,0" />
+                                    <TextBlock Text="Version 0.2.0.26.S" Foreground="{StaticResource TextSub}" FontSize="12" Margin="0,2,0,0" />
                                     <TextBlock Margin="0,6,0,0" FontSize="12">
                                         <Hyperlink NavigateUri="https://discord.gg/Hy38gjThfx" RequestNavigate="Hyperlink_RequestNavigate" Foreground="{StaticResource AccentBrush}">Support Discord</Hyperlink>
                                     </TextBlock>
