@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Klicky"
         mc:Ignorable="d"
-        Title="Klicky" SizeToContent="WidthAndHeight" MinHeight="420" MinWidth="640" WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip" Background="Transparent">
+        Title="Klicky" SizeToContent="WidthAndHeight" MinHeight="420" MinWidth="640" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" AllowsTransparency="True" Background="Transparent">
     <Window.Resources>
         <Color x:Key="Primary">#E6B800</Color>
         <Color x:Key="PrimaryDark">#C59000</Color>
