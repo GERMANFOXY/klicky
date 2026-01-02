@@ -35,8 +35,8 @@
         </Style>
         <Style x:Key="AccentButton" TargetType="Button">
             <Setter Property="Margin" Value="0,8,0,0" />
-            <Setter Property="Padding" Value="14 10" />
-            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="FontSize" Value="15" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Foreground" Value="White" />
             <Setter Property="Background">
@@ -47,8 +47,46 @@
                     </LinearGradientBrush>
                 </Setter.Value>
             </Setter>
+            <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8"
+                                SnapsToDevicePixels="True">
+                            <Grid>
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.98" />
+                                <Setter TargetName="Bd" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#33000000" BlurRadius="8" ShadowDepth="2" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.995" ScaleY="0.995" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.92" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
         <Style x:Key="Chip" TargetType="Border">
             <Setter Property="Background" Value="#111118" />
@@ -162,9 +200,12 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="Klicky Autoclicker" Foreground="{StaticResource TextMain}" FontSize="26" FontWeight="Bold" />
-                                <TextBlock Text="Leichtgewichtig, schnell, schwarz-gold." Foreground="{StaticResource TextSub}" FontSize="14" Margin="0,4,0,14" />
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Image Source="klicky_logo_2.ico" Width="36" Height="36" Margin="0,0,12,0" />
+                                <StackPanel>
+                                    <TextBlock Text="Klicky Autoclicker" Foreground="{StaticResource TextMain}" FontSize="26" FontWeight="Bold" />
+                                    <TextBlock Text="Leichtgewichtig, schnell, schwarz-gold." Foreground="{StaticResource TextSub}" FontSize="14" Margin="0,4,0,14" />
+                                </StackPanel>
                             </StackPanel>
                             <Button Grid.Column="1" Content="✕" FontSize="18" Foreground="{StaticResource TextMain}" Background="Transparent" BorderThickness="0" VerticalAlignment="Top" Margin="0,0,0,0" Click="CloseButton_Click" Cursor="Hand" />
                         </Grid>
@@ -245,10 +286,51 @@
                     </StackPanel>
                 </Grid>
 
-                <StackPanel Grid.Row="2" Margin="0,4,0,0">
+                <!-- Action Buttons Row -->
+                <StackPanel Grid.Row="2" Margin="0,-80,0,0" HorizontalAlignment="Right">
+                    <!-- Steuerung -->
+                    <TextBlock Text="Steuerung" Foreground="{StaticResource AccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,0,0,6" />
+                    <Button x:Name="StartStopButton" Style="{StaticResource AccentButton}" Width="180" Margin="0,0,0,8" Click="StartStopButton_Click" ToolTip="Start / Stop (Hotkey)">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="▶" FontSize="16" Margin="0,0,8,0" />
+                            <TextBlock Text="Starten" />
+                        </StackPanel>
+                    </Button>
+                    
+                    <!-- Profile -->
+                    <TextBlock Text="Profile" Foreground="{StaticResource AccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,8,0,6" />
+                    <Button x:Name="SaveProfileButton" Style="{StaticResource AccentButton}" Width="180" Margin="0,0,0,6" Click="SaveProfileButton_Click" ToolTip="Profil speichern">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="💾" FontSize="14" Margin="0,0,6,0" />
+                            <TextBlock Text="Speichern" />
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="DeleteProfileButton" Style="{StaticResource AccentButton}" Width="180" Margin="0,0,0,8" Click="DeleteProfileButton_Click" ToolTip="Profil löschen">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="🗑" FontSize="14" Margin="0,0,6,0" />
+                            <TextBlock Text="Löschen" />
+                        </StackPanel>
+                    </Button>
+                    
+                    <!-- Info & Updates -->
+                    <TextBlock Text="Info &amp; Updates" Foreground="{StaticResource AccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,8,0,6" />
+                    <Button x:Name="CheckUpdateButton" Style="{StaticResource AccentButton}" Width="180" Margin="0,0,0,6" Click="CheckUpdateButton_Click" ToolTip="Auf Updates prüfen">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="🔄" FontSize="14" Margin="0,0,6,0" />
+                            <TextBlock Text="Update prüfen" />
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="ShowChangelogButton" Style="{StaticResource AccentButton}" Width="180" Click="ShowChangelogButton_Click" ToolTip="Änderungen anzeigen">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="📝" FontSize="14" Margin="0,0,6,0" />
+                            <TextBlock Text="Changelog" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <StackPanel Grid.Row="3" Margin="0,-130,0,0">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                        <Button x:Name="StartStopButton" Style="{StaticResource AccentButton}" Width="180" Click="StartStopButton_Click">Starten</Button>
-                        <CheckBox x:Name="FollowCursorCheck" Content="Cursor folgen" Foreground="{StaticResource TextMain}" FontSize="13" VerticalAlignment="Center" Margin="16,0,0,0" IsChecked="True" />
+                        <CheckBox x:Name="FollowCursorCheck" Content="Cursor folgen" Foreground="{StaticResource TextMain}" FontSize="13" VerticalAlignment="Center" IsChecked="True" />
                     </StackPanel>
                     <CheckBox x:Name="HoldModeCheck" Content="Halten-Modus (Roblox)" Foreground="{StaticResource TextMain}" FontSize="13" Margin="0,10,0,8" IsChecked="False" Checked="HoldModeCheck_Changed" Unchecked="HoldModeCheck_Changed" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Center">
@@ -287,18 +369,18 @@
                             <ComboBoxItem Content="F12" />
                         </ComboBox>
                     </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,12,0,0">
+                        <TextBlock Text="Profile:" Foreground="{StaticResource TextMain}" FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0" />
+                        <ComboBox x:Name="ProfileCombo" Style="{StaticResource VioletComboBox}" Width="180" SelectionChanged="ProfileCombo_SelectionChanged" />
+                    </StackPanel>
                 </StackPanel>
 
-                <Grid Grid.Row="3" Margin="0,14,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Grid Grid.Row="4" Margin="0,6,0,0">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
                         <TextBlock Text="Tip:" Foreground="{StaticResource AccentBrush}" FontWeight="Bold" />
                         <TextBlock Text="Hotkey startet/stoppt. Einstellungen speichern automatisch." Foreground="{StaticResource TextSub}" Margin="8,0,0,0" />
                     </StackPanel>
-                    <Button x:Name="CheckUpdateButton" Grid.Column="1" Style="{StaticResource AccentButton}" Padding="12 8" Width="170" Click="CheckUpdateButton_Click">Update prüfen</Button>
                 </Grid>
 
                 <!-- Fireworks overlay -->

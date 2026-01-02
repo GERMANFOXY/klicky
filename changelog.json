@@ -1,11 +1,14 @@
-{
-  "0.2.0.26": [
+﻿{
+  "1.0.0": [
     "Neue kompakte, transparente Benutzeroberfläche ohne schwarze Blöcke.",
     "Borderless Window mit Drag- und Close-Funktionalität.",
-    "Verbesserte Benutzerfreundlichkeit und moderne Optik."
-  ],
-  "0.1.0.26": [
-    "Erste stabile Version mit Auto-Updater.",
-    "Hotkey-Unterstützung und grundlegende Klick-Funktionen."
-  ]
-}
+    "Verbesserte Benutzerfreundlichkeit und moderne Optik.",
+    "Profile-System für verschiedene Click-Konfigurationen.",
+    "Changelog-Funktion im App-Interface.",
+    "Überarbeitete Schaltflächen mit Kategorisierung."
+    ],
+    "0.1.0": [
+      "Erste stabile Version mit Auto-Updater.",
+      "Hotkey-Unterstützung und grundlegende Klick-Funktionen."
+    ]
+  }

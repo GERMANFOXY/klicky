@@ -23,7 +23,7 @@ namespace Klicky;
 
 public partial class MainWindow : Window
 {
-    private const string AppVersion = "0.2.0.26";
+    private const string AppVersion = "1.0.0";
     private const string ManifestUrl = "https://raw.githubusercontent.com/GERMANFOXY/klicky/master/manifest.json";
 
     private const int HotkeyId = 9000;
@@ -31,6 +31,46 @@ public partial class MainWindow : Window
     private uint _currentVirtualKey = 0x75; // Default F6
 
     private static readonly HttpClient Http = new();
+
+    // ...existing code...
+
+    private void ShowChangelogButton_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var changelogPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "changelog.json");
+            if (!System.IO.File.Exists(changelogPath))
+            {
+                MessageBox.Show("Changelog-Datei nicht gefunden!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            var json = System.IO.File.ReadAllText(changelogPath);
+            var changelog = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, List<string>>>(json);
+            if (changelog == null)
+            {
+                MessageBox.Show("Changelog konnte nicht geladen werden!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            var version = AppVersion;
+            if (!changelog.ContainsKey(version))
+            {
+                var keys = string.Join(", ", changelog.Keys.Select(k => $"\"{k}\""));
+                MessageBox.Show($"Keine Änderungen für Version {version} gefunden! Verfügbare Versionen: {keys}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            var changes = changelog[version];
+            var text = $"Version {version}:\n\n" + string.Join("\n• ", changes);
+            var window = new ChangelogWindow();
+            window.ChangelogText.Text = text;
+            window.ShowDialog();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Fehler beim Laden des Changelogs: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    // ...existing code...
     private readonly Timer _clickTimer = new();
     private readonly object _clickLock = new();
     private readonly MediaPlayer _notificationPlayer = new();
@@ -58,7 +98,9 @@ public partial class MainWindow : Window
 
         SetupFireworksVideo();
         
-        CheckForChangelog();
+        // Load profiles and settings
+        LoadProfiles();
+        LoadSettings();
         
         // Load notification sound
         try
@@ -70,6 +112,76 @@ public partial class MainWindow : Window
             }
         }
         catch { /* Ignore if sound file is missing */ }
+    }
+
+    private string ProfilesPath => IOPath.Combine(AppDomain.CurrentDomain.BaseDirectory, "profiles.json");
+    private string SettingsPath => IOPath.Combine(AppDomain.CurrentDomain.BaseDirectory, "settings.json");
+
+    private void LoadProfiles()
+    {
+        try
+        {
+            if (!File.Exists(ProfilesPath))
+            {
+                ProfileCombo.ItemsSource = null;
+                return;
+            }
+            var json = File.ReadAllText(ProfilesPath);
+            var dict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, Profile>>(json);
+            if (dict == null) return;
+            ProfileCombo.ItemsSource = dict.Keys.ToList();
+        }
+        catch { /* ignore */ }
+    }
+
+    private void SaveProfilesDictionary(Dictionary<string, Profile> dict)
+    {
+        var json = System.Text.Json.JsonSerializer.Serialize(dict, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+        File.WriteAllText(ProfilesPath, json);
+    }
+
+    private void LoadSettings()
+    {
+        try
+        {
+            if (!File.Exists(SettingsPath)) return;
+            var json = File.ReadAllText(SettingsPath);
+            var settings = System.Text.Json.JsonSerializer.Deserialize<Settings>(json);
+            if (settings == null) return;
+            // apply settings: hotkey index
+            if (settings.HotkeyIndex >= 0 && settings.HotkeyIndex <= 11)
+            {
+                HotkeyComboBox.SelectedIndex = settings.HotkeyIndex;
+            }
+        }
+        catch { }
+    }
+
+    private void SaveSettings()
+    {
+        try
+        {
+            var settings = new Settings { HotkeyIndex = HotkeyComboBox.SelectedIndex };
+            var json = System.Text.Json.JsonSerializer.Serialize(settings, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(SettingsPath, json);
+        }
+        catch { }
+    }
+
+    private class Profile
+    {
+        public int Cps { get; set; }
+        public int Interval { get; set; }
+        public int ButtonIndex { get; set; }
+        public bool FollowCursor { get; set; }
+        public bool HoldMode { get; set; }
+        public int HoldDuration { get; set; }
+        public int HotkeyIndex { get; set; }
+    }
+
+    private class Settings
+    {
+        public int HotkeyIndex { get; set; }
     }
 
     private uint GetVirtualKeyCode(int fKeyIndex)
@@ -102,6 +214,93 @@ public partial class MainWindow : Window
         
         // Update display
         UpdateHotkeyDisplay();
+        SaveSettings();
+    }
+
+    private void ProfileCombo_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    {
+        if (ProfileCombo.SelectedItem == null) return;
+        var name = ProfileCombo.SelectedItem.ToString();
+        LoadProfile(name);
+    }
+
+    private void SaveProfileButton_Click(object sender, RoutedEventArgs e)
+    {
+        var name = Microsoft.VisualBasic.Interaction.InputBox("Profilname eingeben:", "Profil speichern", "NewProfile");
+        if (string.IsNullOrWhiteSpace(name)) return;
+        try
+        {
+            Dictionary<string, Profile> dict = new();
+            if (File.Exists(ProfilesPath))
+            {
+                var json = File.ReadAllText(ProfilesPath);
+                var tmp = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, Profile>>(json);
+                if (tmp != null) dict = tmp;
+            }
+            var profile = new Profile
+            {
+                Cps = int.TryParse(CpsInput.Text, out var c) ? c : 10,
+                Interval = int.TryParse(IntervalInput.Text, out var i) ? i : 100,
+                ButtonIndex = ButtonSelect.SelectedIndex,
+                FollowCursor = FollowCursorCheck.IsChecked ?? true,
+                HoldMode = HoldModeCheck.IsChecked ?? false,
+                HoldDuration = int.TryParse(HoldDurationInput.Text, out var h) ? h : 3,
+                HotkeyIndex = HotkeyComboBox.SelectedIndex
+            };
+            dict[name] = profile;
+            SaveProfilesDictionary(dict);
+            LoadProfiles();
+            ProfileCombo.SelectedItem = name;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Fehler beim Speichern des Profils: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void DeleteProfileButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (ProfileCombo.SelectedItem == null) return;
+        var name = ProfileCombo.SelectedItem.ToString();
+        if (string.IsNullOrWhiteSpace(name)) return;
+        try
+        {
+            if (!File.Exists(ProfilesPath)) return;
+            var json = File.ReadAllText(ProfilesPath);
+            var dict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, Profile>>(json);
+            if (dict == null) return;
+            if (dict.Remove(name))
+            {
+                SaveProfilesDictionary(dict);
+                LoadProfiles();
+            }
+        }
+        catch { }
+    }
+
+    private void LoadProfile(string name)
+    {
+        try
+        {
+            if (!File.Exists(ProfilesPath)) return;
+            var json = File.ReadAllText(ProfilesPath);
+            var dict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, Profile>>(json);
+            if (dict == null) return;
+            if (!dict.ContainsKey(name)) return;
+            var p = dict[name];
+            CpsInput.Text = p.Cps.ToString();
+            IntervalInput.Text = p.Interval.ToString();
+            ButtonSelect.SelectedIndex = p.ButtonIndex;
+            FollowCursorCheck.IsChecked = p.FollowCursor;
+            HoldModeCheck.IsChecked = p.HoldMode;
+            HoldDurationInput.Text = p.HoldDuration.ToString();
+            HotkeyComboBox.SelectedIndex = Math.Clamp(p.HotkeyIndex, 0, 11);
+            // Apply hotkey change
+            UpdateHotkeyDisplay();
+            RegisterHotKey();
+            SaveSettings();
+        }
+        catch { }
     }
 
     protected override void OnSourceInitialized(EventArgs e)
@@ -642,32 +841,8 @@ public partial class MainWindow : Window
 
             if (lastVersion != currentVersion)
             {
-                // Show changelog
-                ShowChangelog(currentVersion);
                 // Save current version
                 File.WriteAllText(lastVersionPath, currentVersion);
-            }
-        }
-        catch { /* Ignore errors */ }
-    }
-
-    private void ShowChangelog(string version)
-    {
-        try
-        {
-            var changelogPath = IOPath.Combine(AppDomain.CurrentDomain.BaseDirectory, "changelog.json");
-            if (File.Exists(changelogPath))
-            {
-                var json = File.ReadAllText(changelogPath);
-                var changelog = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, List<string>>>(json);
-                if (changelog != null && changelog.ContainsKey(version))
-                {
-                    var changes = changelog[version];
-                    var text = $"Version {version}:\n\n" + string.Join("\n• ", changes);
-                    var window = new ChangelogWindow();
-                    window.ChangelogText.Text = text;
-                    window.ShowDialog();
-                }
             }
         }
         catch { /* Ignore errors */ }
