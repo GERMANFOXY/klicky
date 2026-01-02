@@ -1,0 +1,11 @@
+{
+  "0.2.0.26": [
+    "Neue kompakte, transparente Benutzeroberfläche ohne schwarze Blöcke.",
+    "Borderless Window mit Drag- und Close-Funktionalität.",
+    "Verbesserte Benutzerfreundlichkeit und moderne Optik."
+  ],
+  "0.1.0.26": [
+    "Erste stabile Version mit Auto-Updater.",
+    "Hotkey-Unterstützung und grundlegende Klick-Funktionen."
+  ]
+}

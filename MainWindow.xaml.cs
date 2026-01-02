@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -56,6 +57,8 @@ public partial class MainWindow : Window
         UpdateHotkeyDisplay();
 
         SetupFireworksVideo();
+        
+        CheckForChangelog();
         
         // Load notification sound
         try
@@ -622,6 +625,52 @@ public partial class MainWindow : Window
     private void MainWindow_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
         DragMove();
+    }
+
+    private void CheckForChangelog()
+    {
+        try
+        {
+            var lastVersionPath = IOPath.Combine(AppDomain.CurrentDomain.BaseDirectory, "last_version.txt");
+            var currentVersion = AppVersion;
+
+            string? lastVersion = null;
+            if (File.Exists(lastVersionPath))
+            {
+                lastVersion = File.ReadAllText(lastVersionPath).Trim();
+            }
+
+            if (lastVersion != currentVersion)
+            {
+                // Show changelog
+                ShowChangelog(currentVersion);
+                // Save current version
+                File.WriteAllText(lastVersionPath, currentVersion);
+            }
+        }
+        catch { /* Ignore errors */ }
+    }
+
+    private void ShowChangelog(string version)
+    {
+        try
+        {
+            var changelogPath = IOPath.Combine(AppDomain.CurrentDomain.BaseDirectory, "changelog.json");
+            if (File.Exists(changelogPath))
+            {
+                var json = File.ReadAllText(changelogPath);
+                var changelog = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, List<string>>>(json);
+                if (changelog != null && changelog.ContainsKey(version))
+                {
+                    var changes = changelog[version];
+                    var text = $"Version {version}:\n\n" + string.Join("\n• ", changes);
+                    var window = new ChangelogWindow();
+                    window.ChangelogText.Text = text;
+                    window.ShowDialog();
+                }
+            }
+        }
+        catch { /* Ignore errors */ }
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)
