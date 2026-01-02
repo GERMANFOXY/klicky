@@ -149,9 +149,6 @@
         </Grid.Effect>
         <MediaElement x:Name="FireworksVideo" LoadedBehavior="Manual" UnloadedBehavior="Manual" Stretch="UniformToFill" IsHitTestVisible="False" Panel.ZIndex="0" Opacity="0" />
         <Border Panel.ZIndex="1" Padding="26" CornerRadius="18" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1.5">
-            <Border.Effect>
-                <DropShadowEffect Color="#000000" BlurRadius="18" ShadowDepth="0" Opacity="0.25" />
-            </Border.Effect>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
