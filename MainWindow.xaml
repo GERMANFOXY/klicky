@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Klicky"
         mc:Ignorable="d"
-        Title="Klicky" Height="480" Width="760" MinHeight="420" MinWidth="640" WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip" Background="Transparent">
+        Title="Klicky" SizeToContent="WidthAndHeight" MinHeight="420" MinWidth="640" WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip" Background="Transparent">
     <Window.Resources>
         <Color x:Key="Primary">#E6B800</Color>
         <Color x:Key="PrimaryDark">#C59000</Color>
@@ -148,7 +148,7 @@
             <DropShadowEffect Color="#000000" BlurRadius="24" ShadowDepth="0" Opacity="0.35" />
         </Grid.Effect>
         <MediaElement x:Name="FireworksVideo" LoadedBehavior="Manual" UnloadedBehavior="Manual" Stretch="UniformToFill" IsHitTestVisible="False" Panel.ZIndex="0" Opacity="0" />
-        <Border Panel.ZIndex="1" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="26" CornerRadius="18" Background="{StaticResource CardBrush}" BorderBrush="#4A3A0F" BorderThickness="1.5">
+        <Border Panel.ZIndex="1" Padding="26" CornerRadius="18" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1.5">
             <Border.Effect>
                 <DropShadowEffect Color="#000000" BlurRadius="18" ShadowDepth="0" Opacity="0.25" />
             </Border.Effect>
