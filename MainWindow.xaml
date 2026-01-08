@@ -215,7 +215,7 @@
                                 <StackPanel>
                                     <TextBlock Text="Support" Foreground="{StaticResource AccentBrush}" FontSize="14" FontWeight="Bold" />
                                     <TextBlock Text="Powered by FOXYVERSE" Foreground="{StaticResource TextMain}" FontSize="12" Margin="0,4,0,0" />
-                                    <TextBlock Text="Version 1.0.0" Foreground="{StaticResource TextSub}" FontSize="12" Margin="0,2,0,0" />
+                                    <TextBlock Text="Version 1.2.0" Foreground="{StaticResource TextSub}" FontSize="12" Margin="0,2,0,0" />
                                     <TextBlock Margin="0,6,0,0" FontSize="12">
                                         <Hyperlink NavigateUri="https://discord.gg/Hy38gjThfx" RequestNavigate="Hyperlink_RequestNavigate" Foreground="{StaticResource AccentBrush}">Support Discord</Hyperlink>
                                     </TextBlock>
@@ -231,10 +231,10 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Margin="0,0,12,0" VerticalAlignment="Top">
                         <TextBlock Text="Clicks per Second" Foreground="{StaticResource TextSub}" Margin="0,0,0,2" />
-                        <TextBox x:Name="CpsInput" Style="{StaticResource InputBox}" Text="10" ToolTip="Wie viele Klicks pro Sekunde" TextChanged="CpsInput_TextChanged" />
+                        <TextBox x:Name="CpsInput" Style="{StaticResource InputBox}" Text="10" Width="120" ToolTip="Wie viele Klicks pro Sekunde" TextChanged="CpsInput_TextChanged" />
 
                         <TextBlock Text="Intervall (ms, optional)" Foreground="{StaticResource TextSub}" Margin="0,0,0,2" />
-                        <TextBox x:Name="IntervalInput" Style="{StaticResource InputBox}" Text="100" ToolTip="Millisekunden zwischen Klicks; überschreibt CPS wenn angegeben" />
+                        <TextBox x:Name="IntervalInput" Style="{StaticResource InputBox}" Text="100" Width="120" ToolTip="Millisekunden zwischen Klicks; überschreibt CPS wenn angegeben" />
 
                         <TextBlock Text="Maus-Button" Foreground="{StaticResource TextSub}" Margin="0,0,0,2" />
                         <ComboBox x:Name="ButtonSelect" Style="{StaticResource VioletComboBox}" SelectedIndex="0">
@@ -335,7 +335,7 @@
                     <CheckBox x:Name="HoldModeCheck" Content="Halten-Modus (Roblox)" Foreground="{StaticResource TextMain}" FontSize="13" Margin="0,10,0,8" IsChecked="False" Checked="HoldModeCheck_Changed" Unchecked="HoldModeCheck_Changed" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Center">
                         <TextBlock x:Name="HoldDurationLabel" Text="Halte-Dauer (Sekunden):" Foreground="{StaticResource TextSub}" FontSize="14" VerticalAlignment="Center" Margin="0,0,12,0" Visibility="Collapsed" />
-                        <TextBox x:Name="HoldDurationInput" Style="{StaticResource InputBox}" Text="3" Visibility="Collapsed" />
+                        <TextBox x:Name="HoldDurationInput" Style="{StaticResource InputBox}" Text="3" Width="120" Visibility="Collapsed" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,12,0,0">
                         <TextBlock Text="Hotkey:" Foreground="{StaticResource TextMain}" FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0" />
