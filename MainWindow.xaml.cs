@@ -340,11 +340,6 @@ public partial class MainWindow : Window
 
     private void CpsInput_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
     {
-        var text = CpsInput.Text.Trim();
-        if (text == "2026" && !_fireworksRunning)
-        {
-            StartFireworks(TimeSpan.FromSeconds(10));
-        }
     }
 
     private void StartFireworks(TimeSpan duration)
@@ -677,10 +672,10 @@ public partial class MainWindow : Window
         {
             UpdateStatus("Update wird heruntergeladen...", running: false);
 
-            // Use URL from manifest
-            var installerUrl = manifest.Url;
+            // Get installer URL - construct direct download URL from GitHub release
+            var installerUrl = $"https://github.com/GERMANFOXY/klicky/releases/download/v{manifest.Version}/Klicky-Setup-{manifest.Version}.exe";
             
-            var tempPath = IOPath.Combine(IOPath.GetTempPath(), $"Klicky-{manifest.Version}.exe");
+            var tempPath = IOPath.Combine(IOPath.GetTempPath(), $"Klicky-Setup-{manifest.Version}.exe");
 
             // Download installer
             var response = await Http.GetAsync(installerUrl);
@@ -698,11 +693,12 @@ public partial class MainWindow : Window
 
             UpdateStatus("Update wird installiert...", running: false);
 
-            // Start new executable
+            // Start installer
             Process.Start(new ProcessStartInfo
             {
                 FileName = tempPath,
-                UseShellExecute = true
+                UseShellExecute = true,
+                Verb = "runas" // Run as admin
             });
 
             // Close current app
