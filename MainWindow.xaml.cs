@@ -635,7 +635,9 @@ public partial class MainWindow : Window
     {
         try
         {
-            var json = await Http.GetStringAsync(ManifestUrl);
+            // Add cache-busting parameter to ensure fresh manifest
+            var urlWithCache = ManifestUrl + "?t=" + DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            var json = await Http.GetStringAsync(urlWithCache);
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var manifest = JsonSerializer.Deserialize<UpdateManifest>(json, options);
 
@@ -653,6 +655,7 @@ public partial class MainWindow : Window
                 return;
             }
 
+            // Always show update message when new version is available
             var result = MessageBox.Show($"Neue Version {manifest.Version} verfügbar. Jetzt herunterladen und installieren?", "Update", MessageBoxButton.YesNo, MessageBoxImage.Information);
             if (result == MessageBoxResult.Yes)
             {
@@ -661,6 +664,8 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
+            // Even in silent mode, log the error for debugging
+            System.Diagnostics.Debug.WriteLine($"Update check failed: {ex.Message}");
             if (!silent)
                 MessageBox.Show($"Update-Check fehlgeschlagen: {ex.Message}", "Update", MessageBoxButton.OK, MessageBoxImage.Error);
         }
