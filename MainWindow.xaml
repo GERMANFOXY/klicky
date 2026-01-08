@@ -215,7 +215,7 @@
                                 <StackPanel>
                                     <TextBlock Text="Support" Foreground="{StaticResource AccentBrush}" FontSize="14" FontWeight="Bold" />
                                     <TextBlock Text="Powered by FOXYVERSE" Foreground="{StaticResource TextMain}" FontSize="12" Margin="0,4,0,0" />
-                                    <TextBlock Text="Version 1.2.0" Foreground="{StaticResource TextSub}" FontSize="12" Margin="0,2,0,0" />
+                                    <TextBlock Text="Version 1.2.H" Foreground="{StaticResource TextSub}" FontSize="12" Margin="0,2,0,0" />
                                     <TextBlock Margin="0,6,0,0" FontSize="12">
                                         <Hyperlink NavigateUri="https://discord.gg/Hy38gjThfx" RequestNavigate="Hyperlink_RequestNavigate" Foreground="{StaticResource AccentBrush}">Support Discord</Hyperlink>
                                     </TextBlock>
@@ -229,15 +229,34 @@
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
+
+                    <!-- Linke Spalte: Eingaben vertikal aber jede Zeile in eigener Grid für saubere Ausrichtung -->
                     <StackPanel Margin="0,0,12,0" VerticalAlignment="Top">
-                        <TextBlock Text="Clicks per Second" Foreground="{StaticResource TextSub}" Margin="0,0,0,2" />
-                        <TextBox x:Name="CpsInput" Style="{StaticResource InputBox}" Text="10" Width="120" ToolTip="Wie viele Klicks pro Sekunde" TextChanged="CpsInput_TextChanged" />
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Clicks per Second" Foreground="{StaticResource TextSub}" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="CpsInput" Style="{StaticResource InputBox}" Text="10" Width="120" ToolTip="Wie viele Klicks pro Sekunde" TextChanged="CpsInput_TextChanged" />
+                        </Grid>
 
-                        <TextBlock Text="Intervall (ms, optional)" Foreground="{StaticResource TextSub}" Margin="0,0,0,2" />
-                        <TextBox x:Name="IntervalInput" Style="{StaticResource InputBox}" Text="100" Width="120" ToolTip="Millisekunden zwischen Klicks; überschreibt CPS wenn angegeben" />
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Intervall (ms, optional)" Foreground="{StaticResource TextSub}" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="IntervalInput" Style="{StaticResource InputBox}" Text="100" Width="120" ToolTip="Millisekunden zwischen Klicks; überschreibt CPS wenn angegeben" />
+                        </Grid>
 
-                        <TextBlock Text="Maus-Button" Foreground="{StaticResource TextSub}" Margin="0,0,0,2" />
-                        <ComboBox x:Name="ButtonSelect" Style="{StaticResource VioletComboBox}" SelectedIndex="0">
+                        <Grid Margin="0,0,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Maus-Button" Foreground="{StaticResource TextSub}" VerticalAlignment="Center" />
+                            <ComboBox Grid.Column="1" x:Name="ButtonSelect" Style="{StaticResource VioletComboBox}" SelectedIndex="0">
                             <ComboBox.Resources>
                                 <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#1A1520" />
                                 <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="#1A1520" />
@@ -264,6 +283,7 @@
                             <ComboBoxItem Content="Links" />
                             <ComboBoxItem Content="Rechts" />
                         </ComboBox>
+                        </Grid>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Top">
