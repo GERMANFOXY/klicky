@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Klicky"
         mc:Ignorable="d"
-        Title="Klicky" SizeToContent="WidthAndHeight" MinHeight="420" MinWidth="640" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" AllowsTransparency="True" Background="Transparent">
+        Title="Klicky" SizeToContent="WidthAndHeight" MinHeight="400" MinWidth="600" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" AllowsTransparency="True" Background="Transparent">
     <Window.Resources>
         <Color x:Key="Primary">#E6B800</Color>
         <Color x:Key="PrimaryDark">#C59000</Color>
@@ -181,14 +181,12 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Border Padding="26" CornerRadius="18" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1.5">
+    <Border Padding="20" CornerRadius="18" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1.5">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -215,7 +213,7 @@
                                 <StackPanel>
                                     <TextBlock Text="Support" Foreground="{StaticResource AccentBrush}" FontSize="14" FontWeight="Bold" />
                                     <TextBlock Text="Powered by FOXYVERSE" Foreground="{StaticResource TextMain}" FontSize="12" Margin="0,4,0,0" />
-                                    <TextBlock Text="Version 1.2.H" Foreground="{StaticResource TextSub}" FontSize="12" Margin="0,2,0,0" />
+                                    <TextBlock Text="Version 1.3.0" Foreground="{StaticResource TextSub}" FontSize="12" Margin="0,2,0,0" />
                                     <TextBlock Margin="0,6,0,0" FontSize="12">
                                         <Hyperlink NavigateUri="https://discord.gg/Hy38gjThfx" RequestNavigate="Hyperlink_RequestNavigate" Foreground="{StaticResource AccentBrush}">Support Discord</Hyperlink>
                                     </TextBlock>
@@ -226,37 +224,20 @@
 
                 <Grid Grid.Row="1" Margin="0,4,0,10">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="1.6*"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Linke Spalte: Eingaben vertikal aber jede Zeile in eigener Grid für saubere Ausrichtung -->
-                    <StackPanel Margin="0,0,12,0" VerticalAlignment="Top">
-                        <Grid Margin="0,0,0,8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="160"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Clicks per Second" Foreground="{StaticResource TextSub}" VerticalAlignment="Center" />
-                            <TextBox Grid.Column="1" x:Name="CpsInput" Style="{StaticResource InputBox}" Text="10" Width="120" ToolTip="Wie viele Klicks pro Sekunde" TextChanged="CpsInput_TextChanged" />
-                        </Grid>
+                    <!-- Linke Spalte: Labels direkt über den Eingaben -->
+                    <StackPanel Margin="0,0,12,0" VerticalAlignment="Top" HorizontalAlignment="Left">
+                        <TextBlock Text="Clicks per Second" Foreground="{StaticResource TextSub}" Margin="0,0,0,4" />
+                        <TextBox x:Name="CpsInput" Style="{StaticResource InputBox}" Text="10" Width="160" ToolTip="Wie viele Klicks pro Sekunde" TextChanged="CpsInput_TextChanged" HorizontalAlignment="Left" />
 
-                        <Grid Margin="0,0,0,8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="160"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Intervall (ms, optional)" Foreground="{StaticResource TextSub}" VerticalAlignment="Center" />
-                            <TextBox Grid.Column="1" x:Name="IntervalInput" Style="{StaticResource InputBox}" Text="100" Width="120" ToolTip="Millisekunden zwischen Klicks; überschreibt CPS wenn angegeben" />
-                        </Grid>
+                        <TextBlock Text="Intervall (ms, optional)" Foreground="{StaticResource TextSub}" Margin="0,10,0,4" />
+                        <TextBox x:Name="IntervalInput" Style="{StaticResource InputBox}" Text="100" Width="160" ToolTip="Millisekunden zwischen Klicks; überschreibt CPS wenn angegeben" HorizontalAlignment="Left" />
 
-                        <Grid Margin="0,0,0,4">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="160"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Maus-Button" Foreground="{StaticResource TextSub}" VerticalAlignment="Center" />
-                            <ComboBox Grid.Column="1" x:Name="ButtonSelect" Style="{StaticResource VioletComboBox}" SelectedIndex="0">
+                        <TextBlock Text="Maus-Button" Foreground="{StaticResource TextSub}" Margin="0,10,0,4" />
+                        <ComboBox x:Name="ButtonSelect" Style="{StaticResource VioletComboBox}" SelectedIndex="0" HorizontalAlignment="Left" Width="160">
                             <ComboBox.Resources>
                                 <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#1A1520" />
                                 <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="#1A1520" />
@@ -283,7 +264,55 @@
                             <ComboBoxItem Content="Links" />
                             <ComboBoxItem Content="Rechts" />
                         </ComboBox>
-                        </Grid>
+
+                        <!-- Einstellungen unter den Eingaben -->
+                        <StackPanel Margin="0,14,0,0" VerticalAlignment="Top">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                <CheckBox x:Name="FollowCursorCheck" Content="Cursor folgen" Foreground="{StaticResource TextMain}" FontSize="13" VerticalAlignment="Center" IsChecked="True" />
+                            </StackPanel>
+                            <CheckBox x:Name="HoldModeCheck" Content="Halten-Modus (Roblox)" Foreground="{StaticResource TextMain}" FontSize="13" Margin="0,8,0,8" IsChecked="False" Checked="HoldModeCheck_Changed" Unchecked="HoldModeCheck_Changed" />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock x:Name="HoldDurationLabel" Text="Halte-Dauer (Sekunden):" Foreground="{StaticResource TextSub}" FontSize="14" VerticalAlignment="Center" Margin="0,0,12,0" Visibility="Collapsed" />
+                                <TextBox x:Name="HoldDurationInput" Style="{StaticResource InputBox}" Text="3" Width="120" Visibility="Collapsed" />
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="0,8,0,0">
+                                <TextBlock Text="Hotkey:" Foreground="{StaticResource TextMain}" FontSize="14" Margin="0,0,0,2" />
+                                <ComboBox x:Name="HotkeyComboBox" Style="{StaticResource VioletComboBox}" Width="170" SelectedIndex="5" SelectionChanged="HotkeyComboBox_SelectionChanged" HorizontalAlignment="Left">
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem">
+                                            <Setter Property="Foreground" Value="{StaticResource TextMain}" />
+                                            <Setter Property="Background" Value="{StaticResource ComboBackground}" />
+                                            <Setter Property="Padding" Value="8 6" />
+                                            <Style.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource ComboHighlight}" />
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource ComboHighlight}" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+                                    <ComboBoxItem Content="F1" />
+                                    <ComboBoxItem Content="F2" />
+                                    <ComboBoxItem Content="F3" />
+                                    <ComboBoxItem Content="F4" />
+                                    <ComboBoxItem Content="F5" />
+                                    <ComboBoxItem Content="F6" />
+                                    <ComboBoxItem Content="F7" />
+                                    <ComboBoxItem Content="F8" />
+                                    <ComboBoxItem Content="F9" />
+                                    <ComboBoxItem Content="F10" />
+                                    <ComboBoxItem Content="F11" />
+                                    <ComboBoxItem Content="F12" />
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="0,8,0,0">
+                                <TextBlock Text="Profile:" Foreground="{StaticResource TextMain}" FontSize="14" Margin="0,0,0,2" />
+                                <ComboBox x:Name="ProfileCombo" Style="{StaticResource VioletComboBox}" Width="170" SelectionChanged="ProfileCombo_SelectionChanged" HorizontalAlignment="Left" />
+                            </StackPanel>
+                        </StackPanel>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Top">
@@ -303,100 +332,49 @@
                                 <TextBlock x:Name="StatusText" Text="Bereit" Foreground="{StaticResource TextMain}" FontSize="16" />
                             </StackPanel>
                         </Border>
+
+                        <StackPanel Margin="0,18,0,0" HorizontalAlignment="Right">
+                            <TextBlock Text="Steuerung" Foreground="{StaticResource AccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,0,0,6" />
+                            <Button x:Name="StartStopButton" Style="{StaticResource AccentButton}" Width="170" Margin="0,0,0,8" Click="StartStopButton_Click" ToolTip="Start / Stop (Hotkey)">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock Text="▶" FontSize="16" Margin="0,0,8,0" />
+                                    <TextBlock Text="Starten" />
+                                </StackPanel>
+                            </Button>
+
+                            <TextBlock Text="Profile" Foreground="{StaticResource AccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,8,0,6" />
+                            <Button x:Name="SaveProfileButton" Style="{StaticResource AccentButton}" Width="170" Margin="0,0,0,6" Click="SaveProfileButton_Click" ToolTip="Profil speichern">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock Text="💾" FontSize="14" Margin="0,0,6,0" />
+                                    <TextBlock Text="Speichern" />
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="DeleteProfileButton" Style="{StaticResource AccentButton}" Width="170" Margin="0,0,0,8" Click="DeleteProfileButton_Click" ToolTip="Profil löschen">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock Text="🗑" FontSize="14" Margin="0,0,6,0" />
+                                    <TextBlock Text="Löschen" />
+                                </StackPanel>
+                            </Button>
+
+                            <TextBlock Text="Info &amp; Updates" Foreground="{StaticResource AccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,8,0,6" />
+                            <Button x:Name="CheckUpdateButton" Style="{StaticResource AccentButton}" Width="170" Margin="0,0,0,6" Click="CheckUpdateButton_Click" ToolTip="Auf Updates prüfen">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock Text="🔄" FontSize="14" Margin="0,0,6,0" />
+                                    <TextBlock Text="Update prüfen" />
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="ShowChangelogButton" Style="{StaticResource AccentButton}" Width="170" Click="ShowChangelogButton_Click" ToolTip="Änderungen anzeigen">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock Text="📝" FontSize="14" Margin="0,0,6,0" />
+                                    <TextBlock Text="Changelog" />
+                                </StackPanel>
+                            </Button>
+
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
 
-                <!-- Action Buttons Row -->
-                <StackPanel Grid.Row="2" Margin="0,-80,0,0" HorizontalAlignment="Right">
-                    <!-- Steuerung -->
-                    <TextBlock Text="Steuerung" Foreground="{StaticResource AccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,0,0,6" />
-                    <Button x:Name="StartStopButton" Style="{StaticResource AccentButton}" Width="180" Margin="0,0,0,8" Click="StartStopButton_Click" ToolTip="Start / Stop (Hotkey)">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <TextBlock Text="▶" FontSize="16" Margin="0,0,8,0" />
-                            <TextBlock Text="Starten" />
-                        </StackPanel>
-                    </Button>
-                    
-                    <!-- Profile -->
-                    <TextBlock Text="Profile" Foreground="{StaticResource AccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,8,0,6" />
-                    <Button x:Name="SaveProfileButton" Style="{StaticResource AccentButton}" Width="180" Margin="0,0,0,6" Click="SaveProfileButton_Click" ToolTip="Profil speichern">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <TextBlock Text="💾" FontSize="14" Margin="0,0,6,0" />
-                            <TextBlock Text="Speichern" />
-                        </StackPanel>
-                    </Button>
-                    <Button x:Name="DeleteProfileButton" Style="{StaticResource AccentButton}" Width="180" Margin="0,0,0,8" Click="DeleteProfileButton_Click" ToolTip="Profil löschen">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <TextBlock Text="🗑" FontSize="14" Margin="0,0,6,0" />
-                            <TextBlock Text="Löschen" />
-                        </StackPanel>
-                    </Button>
-                    
-                    <!-- Info & Updates -->
-                    <TextBlock Text="Info &amp; Updates" Foreground="{StaticResource AccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,8,0,6" />
-                    <Button x:Name="CheckUpdateButton" Style="{StaticResource AccentButton}" Width="180" Margin="0,0,0,6" Click="CheckUpdateButton_Click" ToolTip="Auf Updates prüfen">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <TextBlock Text="🔄" FontSize="14" Margin="0,0,6,0" />
-                            <TextBlock Text="Update prüfen" />
-                        </StackPanel>
-                    </Button>
-                    <Button x:Name="ShowChangelogButton" Style="{StaticResource AccentButton}" Width="180" Click="ShowChangelogButton_Click" ToolTip="Änderungen anzeigen">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <TextBlock Text="📝" FontSize="14" Margin="0,0,6,0" />
-                            <TextBlock Text="Changelog" />
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
-
-                <StackPanel Grid.Row="3" Margin="0,-130,0,0">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                        <CheckBox x:Name="FollowCursorCheck" Content="Cursor folgen" Foreground="{StaticResource TextMain}" FontSize="13" VerticalAlignment="Center" IsChecked="True" />
-                    </StackPanel>
-                    <CheckBox x:Name="HoldModeCheck" Content="Halten-Modus (Roblox)" Foreground="{StaticResource TextMain}" FontSize="13" Margin="0,10,0,8" IsChecked="False" Checked="HoldModeCheck_Changed" Unchecked="HoldModeCheck_Changed" />
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Center">
-                        <TextBlock x:Name="HoldDurationLabel" Text="Halte-Dauer (Sekunden):" Foreground="{StaticResource TextSub}" FontSize="14" VerticalAlignment="Center" Margin="0,0,12,0" Visibility="Collapsed" />
-                        <TextBox x:Name="HoldDurationInput" Style="{StaticResource InputBox}" Text="3" Width="120" Visibility="Collapsed" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,12,0,0">
-                        <TextBlock Text="Hotkey:" Foreground="{StaticResource TextMain}" FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0" />
-                        <ComboBox x:Name="HotkeyComboBox" Style="{StaticResource VioletComboBox}" Width="100" SelectedIndex="5" SelectionChanged="HotkeyComboBox_SelectionChanged">
-                            <ComboBox.ItemContainerStyle>
-                                <Style TargetType="ComboBoxItem">
-                                    <Setter Property="Foreground" Value="{StaticResource TextMain}" />
-                                    <Setter Property="Background" Value="{StaticResource ComboBackground}" />
-                                    <Setter Property="Padding" Value="8 6" />
-                                    <Style.Triggers>
-                                        <Trigger Property="IsSelected" Value="True">
-                                            <Setter Property="Background" Value="{StaticResource ComboHighlight}" />
-                                        </Trigger>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{StaticResource ComboHighlight}" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ComboBox.ItemContainerStyle>
-                            <ComboBoxItem Content="F1" />
-                            <ComboBoxItem Content="F2" />
-                            <ComboBoxItem Content="F3" />
-                            <ComboBoxItem Content="F4" />
-                            <ComboBoxItem Content="F5" />
-                            <ComboBoxItem Content="F6" />
-                            <ComboBoxItem Content="F7" />
-                            <ComboBoxItem Content="F8" />
-                            <ComboBoxItem Content="F9" />
-                            <ComboBoxItem Content="F10" />
-                            <ComboBoxItem Content="F11" />
-                            <ComboBoxItem Content="F12" />
-                        </ComboBox>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,12,0,0">
-                        <TextBlock Text="Profile:" Foreground="{StaticResource TextMain}" FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0" />
-                        <ComboBox x:Name="ProfileCombo" Style="{StaticResource VioletComboBox}" Width="180" SelectionChanged="ProfileCombo_SelectionChanged" />
-                    </StackPanel>
-                </StackPanel>
-
-                <Grid Grid.Row="4" Margin="0,6,0,0">
+                <Grid Grid.Row="2" Margin="0,6,0,0">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
                         <TextBlock Text="Tip:" Foreground="{StaticResource AccentBrush}" FontWeight="Bold" />
                         <TextBlock Text="Hotkey startet/stoppt. Einstellungen speichern automatisch." Foreground="{StaticResource TextSub}" Margin="8,0,0,0" />
@@ -404,7 +382,7 @@
                 </Grid>
 
                 <!-- Fireworks overlay -->
-                <Canvas x:Name="FireworksCanvas" Grid.Row="0" Grid.RowSpan="5" IsHitTestVisible="False" Panel.ZIndex="8" Opacity="0" Visibility="Collapsed" />
+                <Canvas x:Name="FireworksCanvas" Grid.Row="0" Grid.RowSpan="3" IsHitTestVisible="False" Panel.ZIndex="8" Opacity="0" Visibility="Collapsed" />
         </Grid>
     </Border>
 </Window>

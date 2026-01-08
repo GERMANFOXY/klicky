@@ -23,7 +23,7 @@ namespace Klicky;
 
 public partial class MainWindow : Window
 {
-    private const string AppVersion = "1.2.H";
+    private const string AppVersion = "1.3.0";
     private const string ManifestUrl = "https://raw.githubusercontent.com/GERMANFOXY/klicky/master/manifest.json";
 
     private const int HotkeyId = 9000;
